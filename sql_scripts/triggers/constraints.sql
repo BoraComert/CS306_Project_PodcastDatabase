@@ -1,0 +1,9 @@
+ALTER TABLE EPISODES
+ADD CONSTRAINT chk_ep_duration
+CHECK (ep_duration > 0);
+
+
+ALTER TABLE REVIEWS
+ADD CONSTRAINT chk_star_range
+CHECK (review_star BETWEEN 1 AND 5);
+
