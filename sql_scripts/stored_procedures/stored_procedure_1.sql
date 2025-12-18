@@ -1,54 +1,30 @@
-use supodcast_db;
-
 DELIMITER //
+-- this stored procedure creates a review for a given episode, it is the updated version that includes auto increment
+CREATE PROCEDURE createReview(
+    IN r_ep_id INT,
+    IN rating INT,
+    IN r_comment VARCHAR(200)
+)
+BEGIN
+    -- 1) check if episode really exists
+    IF NOT EXISTS (
+        SELECT 1
+        FROM EPISODES e
+        WHERE e.ep_id = r_ep_id
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'You cant review an episode that doesnt exist!';
+    END IF;
 
-create procedure createReview( in r_ep_id int , in rating int, in r_comment varchar(200))
+    -- check if rating is between 1 and 5
+    IF rating < 1 OR rating > 5 THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Rating should be between 1 and 5';
+    END IF;
 
-begin
-
-declare rid int;
-
-
-
--- if a review doesn't exist for an episode then first rid is set as 1 
-
-if not exists (select 1 from reviews) then
-set rid = 1;
-
-
--- Generates a new review id based on previous review id count
-else 
-
-
-SELECT MAX(review_id)+1
-INTO rid
-FROM REVIEWS;
-
-end if;
-
--- check if an episode actually exists
-
-if not exists (
-select ep_id 
-from episodes e
-where e.ep_id = r_ep_id
-) then signal sqlstate '45000' set message_text = 'You cant review an episode that doesnt exist!';
-
-end if;
-
--- add a constraint on values because the star rating is 1 from 5
-
-if rating < 1 or rating > 5 Then 
-signal sqlstate '45000' set message_text = 'Rating should be between 1 and 5';
-end if;
-
-
-
-insert into reviews (review_id ,review_star,review_comment ,ep_id )
-Values(rid,rating,r_comment,r_ep_id);
-
-end //
+    
+    INSERT INTO REVIEWS (review_comment, review_star, ep_id)
+    VALUES (r_comment, rating, r_ep_id);
+END //
 
 DELIMITER ;
-
-
