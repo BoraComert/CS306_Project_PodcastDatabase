@@ -1,9 +1,10 @@
+DROP DATABASE IF EXISTS supodcast_db;
 CREATE DATABASE supodcast_db;
 USE supodcast_db;
 CREATE TABLE PODCASTS(
 pod_name VARCHAR(100) not null,
 pod_avg_ep_rating DECIMAL(3,2),
-pod_id INT,
+pod_id INT auto_increment,
 PRIMARY KEY (pod_id),
 pod_description VARCHAR(100) not null
 );
@@ -15,7 +16,7 @@ category_description VARCHAR(200)
 CREATE TABLE EPISODES (
 ep_duration INT not null,
 ep_name VARCHAR(100) not null,
-ep_id INT,
+ep_id INT auto_increment,
 pod_id INT,
 PRIMARY KEY (ep_id),
 FOREIGN KEY (pod_id) references podcasts(pod_id)
@@ -24,7 +25,7 @@ ON UPDATE CASCADE
 );
 CREATE TABLE REVIEWS (
 review_comment VARCHAR(200),
-review_id int ,
+review_id int auto_increment, 
 PRIMARY KEY (review_id),
 review_star int,
 ep_id INT,
@@ -32,7 +33,7 @@ FOREIGN KEY (ep_id) references episodes(ep_id)
 ON DELETE CASCADE
 );
 CREATE TABLE HOSTS (
-host_id INT,
+host_id INT auto_increment,
 host_name VARCHAR(50) not null,
 PRIMARY KEY (host_id),
 host_country VARCHAR(50),
@@ -44,9 +45,9 @@ user_name VARCHAR(200) not null,
 PRIMARY KEY(user_id)
 );
 CREATE TABLE USERPLAYLISTS(
-user_id INT,
+user_id INT not null,
 user_playlistName VARCHAR(100) NOT NULL,
-user_playlist_id INT,
+user_playlist_id INT auto_increment,
 PRIMARY KEY(user_playlist_id),
 FOREIGN KEY(user_id) references users(user_id)
 );
