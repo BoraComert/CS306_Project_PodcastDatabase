@@ -1,0 +1,63 @@
+<?php
+include "config.php";
+
+if (!isset($_GET['pod_id']) || $_GET['pod_id'] === '') {
+    die("Podcast seçilmedi!");
+}
+
+$pod_id = (int) $_GET['pod_id'];
+$podcastName = "";
+
+// 1. Podcast Adını Çek (MySQLi)
+$sqlPod = "SELECT pod_name FROM PODCASTS WHERE pod_id = ?";
+if ($stmtPod = $conn->prepare($sqlPod)) {
+    $stmtPod->bind_param("i", $pod_id); // "i" -> integer (sayı)
+    $stmtPod->execute();
+    $resPod = $stmtPod->get_result();
+    
+    if ($row = $resPod->fetch_assoc()) {
+        $podcastName = $row['pod_name'];
+    } else {
+        die("Böyle bir podcast bulunamadı!");
+    }
+    $stmtPod->close();
+}
+
+// 2. Bölümleri Çek (MySQLi)
+$sqlEp = "SELECT ep_id, ep_name FROM EPISODES WHERE pod_id = ? ORDER BY ep_id ASC";
+$stmtEp = $conn->prepare($sqlEp);
+$stmtEp->bind_param("i", $pod_id);
+$stmtEp->execute();
+$resEp = $stmtEp->get_result();
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title><?php echo htmlspecialchars($podcastName); ?> - Bölümler</title>
+    <style>body { font-family: sans-serif; margin: 30px; }</style>
+</head>
+<body>
+
+<header>
+  <h1><?php echo htmlspecialchars($podcastName); ?> - Bölümler</h1>
+</header>
+
+<?php
+if ($resEp->num_rows > 0) {
+    echo "<ul>";
+    while ($row = $resEp->fetch_assoc()) {
+        echo "<li>" . htmlspecialchars($row["ep_name"]) . "</li>";
+    }
+    echo "</ul>";
+} else {
+    echo "Bu podcast için kayıtlı bölüm bulunamadı.";
+}
+
+$stmtEp->close();
+?>
+
+<p><a href="index.php">← Ana Sayfaya Dön</a></p>
+
+</body>
+</html>
