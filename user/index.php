@@ -48,7 +48,7 @@ include "config.php"; // Bağlantıyı çağır
 <hr>
 
 <h2>Podcast Ara</h2>
-<form action="search.php" method="GET">
+<form action="Search.php" method="GET">
     <input type="text" name="keyword" placeholder="Podcast adı..." required>
     <button type="submit">Ara</button>
 </form>
