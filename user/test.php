@@ -20,36 +20,12 @@ require 'config.php';
     <?php if (isset($conn) && $conn->ping()): ?>
         <div class="box success">
             <h3>✅ MySQL BAĞLI</h3>
-            <p>Veritabanı: <?php echo $dbname; ?></p>
+            <p>Veritabanı: supodcast_db</p>
         </div>
     <?php else: ?>
         <div class="box error">
             <h3>❌ MySQL HATALI</h3>
             <p>Bağlantı değişkeni ($conn) bulunamadı!</p>
-        </div>
-    <?php endif; ?>
-
-    <?php 
-    $mongoDurum = false;
-    try {
-        if(isset($mongoClient)) {
-            $mongoClient->listDatabases();
-            $mongoDurum = true;
-        }
-    } catch (Exception $e) {
-        $mongoDurum = false;
-    }
-    ?>
-
-    <?php if ($mongoDurum): ?>
-        <div class="box success">
-            <h3>✅ MongoDB BAĞLI</h3>
-            <p>Koleksiyon: tickets</p>
-        </div>
-    <?php else: ?>
-        <div class="box error">
-            <h3>❌ MongoDB HATALI</h3>
-            <p>Bağlantı kurulamadı.</p>
         </div>
     <?php endif; ?>
 

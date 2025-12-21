@@ -18,8 +18,7 @@ include "config.php"; // Bağlantıyı çağır
   <h1>Podcast Veritabanı (Phase 3)</h1>
   <p style="color: green;">
       <?php 
-      if(isset($conn)) echo "✅ MySQL Bağlı "; 
-      if(isset($mongoClient)) echo "| ✅ MongoDB Bağlı"; 
+      if(isset($conn)) echo "✅ MySQL Bağlı"; 
       ?>
   </p>
 </header>
@@ -28,10 +27,6 @@ include "config.php"; // Bağlantıyı çağır
 
 <h3>Menü</h3>
 <ul>
-    <li><a href="tickets.php">🎫 Destek Bileti Sistemi (MongoDB)</a></li>
-    
-    <br>
-    
     <strong>Stored Procedures (Veritabanı İşlemleri):</strong>
     <li><a href="sp_create_review.php">📝 Bölüm İncelemesi Ekle (Review)</a></li>
     <li><a href="sp_add_playlist.php">➕ Listeye Bölüm Ekle (Playlist)</a></li>

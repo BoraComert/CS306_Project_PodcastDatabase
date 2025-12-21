@@ -1,15 +1,4 @@
 <?php
-// Composer kütüphanesini çağır
-require_once __DIR__ . '/vendor/autoload.php';
-
-// --- MONGODB AYARLARI ---
-try {
-    $mongoClient = new MongoDB\Client("mongodb://localhost:27017");
-    $ticketCollection = $mongoClient->support_db->tickets;
-} catch (Exception $e) {
-    die("MongoDB Hatası: " . $e->getMessage());
-}
-
 // --- MYSQL AYARLARI ---
 $host = "localhost";
 $user = "root";
