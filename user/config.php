@@ -1,29 +1,29 @@
 <?php
-// Composer kütüphanesini çağır
+// Load Composer library
 require_once __DIR__ . '/vendor/autoload.php';
 
-// --- MONGODB AYARLARI ---
+// --- MONGODB SETTINGS ---
 try {
     $mongoClient = new MongoDB\Client("mongodb://localhost:27017");
     $ticketCollection = $mongoClient->support_db->tickets;
 } catch (Exception $e) {
-    die("MongoDB Hatası: " . $e->getMessage());
+    die("MongoDB Error: " . $e->getMessage());
 }
 
-// --- MYSQL AYARLARI ---
+// --- MYSQL SETTINGS ---
 $host = "localhost";
 $user = "root";
 $pass = "";
 $dbname = "supodcast_db"; 
 
-// Bağlantıyı oluştur ($conn değişkeni burada tanımlanıyor)
+// Create connection ($conn variable is defined here)
 $conn = new mysqli($host, $user, $pass, $dbname);
 
-// Bağlantı hatası varsa durdur
+// Stop if connection error
 if ($conn->connect_error) {
-    die("MySQL Bağlantı Hatası: " . $conn->connect_error);
+    die("MySQL Connection Error: " . $conn->connect_error);
 }
 
-// Türkçe karakter ayarı
+// Turkish character setting
 $conn->set_charset("utf8mb4");
 ?>

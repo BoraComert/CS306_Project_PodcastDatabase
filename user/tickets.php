@@ -1,17 +1,17 @@
 <?php
 include 'config.php';
 
-// Kullanıcı filtreleme (PDF Figür 6)
+// User filtering (PDF Figure 6)
 $selectedUser = $_GET['username'] ?? '';
 
-// Benzersiz kullanıcı adlarını MongoDB'den çek (Dropdown için)
+// Get distinct usernames from MongoDB (For dropdown)
 $users = $ticketCollection->distinct('username');
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Destek Biletleri</title>
+    <title>Support Tickets</title>
     <style>
         body { font-family: sans-serif; margin: 40px; }
         .ticket { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
@@ -22,48 +22,48 @@ $users = $ticketCollection->distinct('username');
 </head>
 <body>
     <div class="nav">
-        <a href="index.php">← Ana Sayfa</a> | <a href="create_ticket.php">+ Yeni Bilet Oluştur</a>
+        <a href="index.php">Home</a> | <a href="create_ticket.php">+ Create New Ticket</a>
     </div>
 
-    <h1>Destek Talepleri</h1>
+    <h1>Support Tickets</h1>
 
     <form method="GET" style="background: #eee; padding: 15px;">
-        <label>Kullanıcı Seç:</label>
+        <label>Select User:</label>
         <select name="username">
-            <option value="">-- Bir kullanıcı seçin --</option>
+            <option value="">-- Select a user --</option>
             <?php foreach ($users as $user): ?>
                 <option value="<?php echo htmlspecialchars($user); ?>" <?php if($selectedUser == $user) echo 'selected'; ?>>
                     <?php echo htmlspecialchars($user); ?>
                 </option>
             <?php endforeach; ?>
         </select>
-        <button type="submit">Listele</button>
+        <button type="submit">List</button>
     </form>
     
     <hr>
 
     <?php
     if ($selectedUser) {
-        // Sadece seçili kullanıcının AKTİF biletleri
+        // Only ACTIVE tickets of selected user
         $cursor = $ticketCollection->find(
             ['username' => $selectedUser, 'status' => true]
         );
 
-        echo "<h3>Sonuçlar:</h3>";
+        echo "<h3>Results:</h3>";
         
         $count = 0;
         foreach ($cursor as $ticket) {
             $count++;
             echo "<div class='ticket active'>";
-            echo "<b>Durum:</b> Aktif<br>";
-            echo "<b>Konu:</b> " . htmlspecialchars($ticket['message']) . "<br>";
-            echo "<small>Oluşturulma: " . $ticket['created_at'] . "</small><br><br>";
-            // Detay linki (Sonra yapacağız)
-            echo "<a href='ticket_details.php?id=" . $ticket['_id'] . "'>Detayları Gör</a>";
+            echo "<b>Status:</b> Active<br>";
+            echo "<b>Subject:</b> " . htmlspecialchars($ticket['message']) . "<br>";
+            echo "<small>Created: " . $ticket['created_at'] . "</small><br><br>";
+            // Detail link
+            echo "<a href='ticket_details.php?id=" . $ticket['_id'] . "'>View Details</a>";
             echo "</div>";
         }
 
-        if ($count == 0) echo "<p>Bu kullanıcının aktif bileti yok.</p>";
+        if ($count == 0) echo "<p>This user has no active tickets.</p>";
     }
     ?>
 </body>

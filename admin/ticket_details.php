@@ -1,31 +1,31 @@
 <?php
 include 'config.php';
 
-if (!isset($_GET['id'])) die("ID yok.");
+if (!isset($_GET['id'])) die("ID not provided.");
 $ticketId = $_GET['id'];
 
 try {
     $objectId = new MongoDB\BSON\ObjectId($ticketId);
     $ticket = $ticketCollection->findOne(['_id' => $objectId]);
-} catch (Exception $e) { die("Geçersiz ID."); }
+} catch (Exception $e) { die("Invalid ID."); }
 
-// --- İŞLEM 1: BİLETİ KAPATMA (RESOLVE) ---
+// --- OPERATION 1: CLOSE TICKET (RESOLVE) ---
 if (isset($_POST['resolve_ticket'])) {
     $ticketCollection->updateOne(
         ['_id' => $objectId],
-        ['$set' => ['status' => false]] // Status'ü false yap (Kapat)
+        ['$set' => ['status' => false]] // Set status to false (Close)
     );
-    // Ana sayfaya geri gönder
+    // Redirect to homepage
     header("Location: index.php"); 
     exit;
 }
 
-// --- İŞLEM 2: YORUM EKLEME ---
+// --- OPERATION 2: ADD COMMENT ---
 if (isset($_POST['submit_comment'])) {
     $comment = $_POST['comment'];
     if (!empty($comment)) {
         $newComment = [
-            'username' => 'admin', // Admin cevaplarında isim sabittir
+            'username' => 'admin', // Admin responses have fixed name
             'comment' => $comment,
             'created_at' => date("Y-m-d H:i:s")
         ];
@@ -33,7 +33,7 @@ if (isset($_POST['submit_comment'])) {
             ['_id' => $objectId],
             ['$push' => ['comments' => $newComment]]
         );
-        header("Refresh:0"); // Sayfayı yenile
+        header("Refresh:0"); // Refresh page
     }
 }
 ?>
@@ -41,35 +41,35 @@ if (isset($_POST['submit_comment'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Bilet Yönetimi</title>
+    <title>Ticket Management</title>
     <style>
         body { font-family: sans-serif; margin: 30px; }
         .box { border: 1px solid #ccc; padding: 20px; background: #fff; }
         .comment-box { margin-top: 20px; padding: 10px; background: #e9ecef; border-left: 4px solid #333; }
-        .admin-comment { background: #d4edda; border-left: 4px solid green; } /* Admin yorumu yeşil olsun */
+        .admin-comment { background: #d4edda; border-left: 4px solid green; } /* Admin comment should be green */
         .resolve-btn { background: #dc3545; color: white; padding: 10px 20px; border: none; cursor: pointer; float: right; }
     </style>
 </head>
 <body>
 
-<a href="index.php">← Listeye Dön</a>
+<a href="index.php">Back to List</a>
 <br><br>
 
 <div class="box">
-    <form method="POST" onsubmit="return confirm('Bu bileti kapatmak istediğine emin misin?');">
-        <button type="submit" name="resolve_ticket" class="resolve-btn">Bileti Kapat (Çözüldü)</button>
+    <form method="POST" onsubmit="return confirm('Are you sure you want to close this ticket?');">
+        <button type="submit" name="resolve_ticket" class="resolve-btn">Close Ticket (Resolved)</button>
     </form>
 
-    <h2>Konu: <?php echo htmlspecialchars($ticket['message']); ?></h2>
-    <p><b>Kullanıcı:</b> <?php echo htmlspecialchars($ticket['username']); ?></p>
-    <p><b>Tarih:</b> <?php echo $ticket['created_at']; ?></p>
+    <h2>Subject: <?php echo htmlspecialchars($ticket['message']); ?></h2>
+    <p><b>User:</b> <?php echo htmlspecialchars($ticket['username']); ?></p>
+    <p><b>Date:</b> <?php echo $ticket['created_at']; ?></p>
 </div>
 
-<h3>Yazışma Geçmişi:</h3>
+<h3>Conversation History:</h3>
 <?php
 $comments = $ticket['comments'] ?? [];
 foreach ($comments as $c) {
-    // Eğer yorumu admin yazdıysa stilini değiştir
+    // Change style if comment is from admin
     $cssClass = ($c['username'] == 'admin') ? 'comment-box admin-comment' : 'comment-box';
     
     echo "<div class='$cssClass'>";
@@ -80,11 +80,11 @@ foreach ($comments as $c) {
 ?>
 
 <hr>
-<h3>Cevap Yaz:</h3>
+<h3>Write Reply:</h3>
 <form method="POST">
-    <textarea name="comment" rows="4" style="width:100%" placeholder="Admin olarak cevapla..." required></textarea>
+    <textarea name="comment" rows="4" style="width:100%" placeholder="Reply as admin..." required></textarea>
     <br><br>
-    <button type="submit" name="submit_comment">Cevabı Gönder</button>
+    <button type="submit" name="submit_comment">Send Reply</button>
 </form>
 
 </body>

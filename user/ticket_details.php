@@ -1,48 +1,48 @@
 <?php
 include 'config.php';
 
-// URL'den ID'yi al (Örn: ticket_details.php?id=654...)
+// Get ID from URL (e.g., ticket_details.php?id=654...)
 if (!isset($_GET['id'])) {
-    die("Bilet ID'si belirtilmedi.");
+    die("Ticket ID not specified.");
 }
 
 $ticketId = $_GET['id'];
 
-// MongoDB'de ID ile arama yapmak için özel format gerekir
+// MongoDB requires special format for ID search
 try {
     $objectId = new MongoDB\BSON\ObjectId($ticketId);
     $ticket = $ticketCollection->findOne(['_id' => $objectId]);
 } catch (Exception $e) {
-    die("Geçersiz Bilet ID'si.");
+    die("Invalid Ticket ID.");
 }
 
 if (!$ticket) {
-    die("Bilet bulunamadı.");
+    die("Ticket not found.");
 }
 
-// Yorum Ekleme İşlemi (PDF Figür 8)
+// Add Comment Operation (PDF Figure 8)
 $mesaj = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $newComment = $_POST['comment'];
-    $commentUser = $_POST['username']; // Yorumu yapan kişi
+    $commentUser = $_POST['username']; // Comment author
 
     if (!empty($newComment) && !empty($commentUser)) {
-        // Yorum objesi
+        // Comment object
         $commentData = [
             'username' => $commentUser,
             'comment' => $newComment,
             'created_at' => date("Y-m-d H:i:s")
         ];
 
-        // MongoDB'de sadece 'comments' dizisine yeni eleman ekle (PUSH işlemi)
+        // Add new element to 'comments' array in MongoDB (PUSH operation)
         $updateResult = $ticketCollection->updateOne(
             ['_id' => $objectId],
             ['$push' => ['comments' => $commentData]]
         );
 
         if ($updateResult->getModifiedCount() == 1) {
-            $mesaj = "<p style='color:green'>Yorum eklendi!</p>";
-            // Sayfayı yenile ki yorum görünsün
+            $mesaj = "<p style='color:green'>Comment added!</p>";
+            // Refresh page to show comment
             header("Refresh:0");
         }
     }
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Bilet Detayı</title>
+    <title>Ticket Details</title>
     <style>
         body { font-family: sans-serif; margin: 40px; }
         .box { border: 1px solid #ccc; padding: 20px; border-radius: 5px; background: #f9f9f9; }
@@ -64,26 +64,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <div class="nav">
-        <a href="tickets.php">← Listeye Dön</a>
+        <a href="tickets.php">Back to List</a>
     </div>
 
-    <h1>Bilet Detayı</h1>
+    <h1>Ticket Details</h1>
 
     <div class="box">
-        <p><b>Kullanıcı:</b> <?php echo htmlspecialchars($ticket['username']); ?></p>
-        <p><b>Konu:</b> <?php echo htmlspecialchars($ticket['message']); ?></p>
-        <p><b>Durum:</b> 
+        <p><b>User:</b> <?php echo htmlspecialchars($ticket['username']); ?></p>
+        <p><b>Subject:</b> <?php echo htmlspecialchars($ticket['message']); ?></p>
+        <p><b>Status:</b> 
             <span class="<?php echo $ticket['status'] ? 'status-active' : 'status-resolved'; ?>">
-                <?php echo $ticket['status'] ? 'Aktif' : 'Çözüldü'; ?>
+                <?php echo $ticket['status'] ? 'Active' : 'Resolved'; ?>
             </span>
         </p>
-        <p><small>Oluşturulma: <?php echo $ticket['created_at']; ?></small></p>
+        <p><small>Created: <?php echo $ticket['created_at']; ?></small></p>
     </div>
 
-    <h3>Yorumlar (Geçmiş):</h3>
+    <h3>Comments (History):</h3>
     <div style="margin-left: 20px;">
         <?php 
-        // Eğer hiç yorum yoksa boş dizi kabul et
+        // Accept empty array if no comments exist
         $comments = $ticket['comments'] ?? []; 
         
         if (count($comments) > 0) {
@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo "</div>";
             }
         } else {
-            echo "<p>Henüz yorum yok.</p>";
+            echo "<p>No comments yet.</p>";
         }
         ?>
     </div>
@@ -103,15 +103,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <hr>
 
     <?php if ($ticket['status']): ?>
-        <h3>Yorum Ekle:</h3>
+        <h3>Add Comment:</h3>
         <?php echo $mesaj; ?>
         <form method="POST">
-            <input type="text" name="username" placeholder="Adınız" required style="margin-bottom:5px;"><br>
-            <textarea name="comment" rows="3" cols="50" placeholder="Cevabınızı yazın..." required></textarea><br>
-            <button type="submit">Yorum Gönder</button>
+            <input type="text" name="username" placeholder="Your name" required style="margin-bottom:5px;"><br>
+            <textarea name="comment" rows="3" cols="50" placeholder="Write your response..." required></textarea><br>
+            <button type="submit">Send Comment</button>
         </form>
     <?php else: ?>
-        <p style="color:red">Bu bilet kapatılmıştır, yorum yapılamaz.</p>
+        <p style="color:red">This ticket is closed, comments cannot be added.</p>
     <?php endif; ?>
 
 </body>

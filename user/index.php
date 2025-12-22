@@ -1,10 +1,10 @@
 <?php
-include "config.php"; // Bağlantıyı çağır
+include "config.php"; // Load connection
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Podcast Ana Sayfa</title>
+    <title>Podcast Homepage</title>
     <style>
         body { font-family: sans-serif; margin: 30px; }
         ul { line-height: 1.6; }
@@ -15,42 +15,43 @@ include "config.php"; // Bağlantıyı çağır
 <body>
 
 <header>
-  <h1>Podcast Veritabanı (Phase 3)</h1>
+  <h1>Podcast Database (Phase 3)</h1>
   <p style="color: green;">
       <?php 
-      if(isset($conn)) echo "✅ MySQL Bağlı "; 
-      if(isset($mongoClient)) echo "| ✅ MongoDB Bağlı"; 
+      if(isset($conn)) echo "MySQL Connected "; 
+      if(isset($mongoClient)) echo "| MongoDB Connected"; 
       ?>
   </p>
 </header>
 
 <hr>
 
-<h3>Menü</h3>
+<h3>Menu</h3>
 <ul>
-    <li><a href="tickets.php">🎫 Destek Bileti Sistemi (MongoDB)</a></li>
     
     <br>
     
-    <strong>Stored Procedures (Veritabanı İşlemleri):</strong>
-    <li><a href="sp_create_review.php">📝 Bölüm İncelemesi Ekle (Review)</a></li>
-    <li><a href="sp_add_playlist.php">➕ Listeye Bölüm Ekle (Playlist)</a></li>
-    <li><a href="sp_create_podcast.php">🎙️ Yeni Podcast Oluştur</a></li>
-    <li><a href="sp_create_episode.php">🎵 Yeni Bölüm Ekle</a></li>
+    <strong>Stored Procedures:</strong>
+    <li><a href="sp_create_review.php">Add Episode Review (Bora Cömert)</a></li>
+    <li><a href="sp_add_playlist.php">Add Episode to Playlist (Bekir Can Aracı)</a></li>
+    <li><a href="sp_create_podcast.php">Create New Podcast (Bora Cömert)</a></li>
+    <li><a href="sp_create_episode.php">Add New Episode (Bekir Can Aracı)</a></li>
 
     <br>
 
-    <strong>Triggers (Tetikleyiciler Testi):</strong>
-    <li><a href="trigger_rating.php">⭐ Test 1: Otomatik Puanlama (Rating Trigger)</a></li>
-    <li><a href="trigger_delete.php">🗑️ Test 2: Otomatik Silme (Delete Trigger)</a></li>
+    <strong>Triggers:</strong>
+    <li><a href="trigger_rating.php">Test 1: Automatic Rating Update (Bekir Can Aracı)</a></li>
+    <li><a href="trigger_delete.php">Test 2: Automatic Deletion (Bora Cömert)</a></li>
+    <br>
+    <li><a href="tickets.php">Support Ticket System (MongoDB)</a></li>
 </ul>
 
 <hr>
 
-<h2>Podcast Ara</h2>
+<h2>Search Podcast</h2>
 <form action="Search.php" method="GET">
-    <input type="text" name="keyword" placeholder="Podcast adı..." required>
-    <button type="submit">Ara</button>
+    <input type="text" name="keyword" placeholder="Podcast name..." required>
+    <button type="submit">Search</button>
 </form>
 
 <footer>

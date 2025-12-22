@@ -4,18 +4,18 @@ include "config.php";
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Arama Sonuçları</title>
+    <title>Search Results</title>
     <style>body { font-family: sans-serif; margin: 30px; }</style>
 </head>
 <body>
 
 <header>
-  <h1>Arama Sonuçları</h1>
+  <h1>Search Results</h1>
 </header>
 
 <?php
 if (!isset($_GET['keyword']) || $_GET['keyword'] === "") {
-    die("Arama değeri gelmedi!");
+    die("No search value provided!");
 }
 
 $keyword = $_GET['keyword'];
@@ -24,7 +24,7 @@ $keyword = $_GET['keyword'];
 $sql = "SELECT pod_id, pod_name FROM PODCASTS WHERE pod_name LIKE ?";
 
 if ($stmt = $conn->prepare($sql)) {
-    // Wildcard (%) ekle
+    // Add wildcard (%)
     $searchTerm = "%" . $keyword . "%";
     
     // "s" demek string (metin) gönderiyoruz demek
@@ -34,7 +34,7 @@ if ($stmt = $conn->prepare($sql)) {
     // Sonuçları al
     $result = $stmt->get_result();
 
-    echo "<h2>'" . htmlspecialchars($keyword) . "' için sonuçlar:</h2>";
+    echo "<h2>Results for '" . htmlspecialchars($keyword) . "':</h2>";
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -43,15 +43,15 @@ if ($stmt = $conn->prepare($sql)) {
                  '</a><br>';
         }
     } else {
-        echo "Sonuç bulunamadı!";
+        echo "No results found!";
     }
     $stmt->close();
 } else {
-    echo "Sorgu Hatası: " . $conn->error;
+    echo "Query Error: " . $conn->error;
 }
 ?>
 
-<p><a href="index.php">← Ana Sayfaya Dön</a></p>
+<p><a href="index.php">Back to Home</a></p>
 
 </body> 
 </html>
