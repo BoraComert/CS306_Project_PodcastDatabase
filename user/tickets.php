@@ -5,7 +5,7 @@ include 'config.php';
 $selectedUser = $_GET['username'] ?? '';
 
 // Get distinct usernames from MongoDB (For dropdown)
-$users = $ticketCollection->distinct('username');
+$users = mongoDistinct($mongoManager, 'username');
 ?>
 
 <!DOCTYPE html>
@@ -45,14 +45,12 @@ $users = $ticketCollection->distinct('username');
     <?php
     if ($selectedUser) {
         // Only ACTIVE tickets of selected user
-        $cursor = $ticketCollection->find(
-            ['username' => $selectedUser, 'status' => true]
-        );
+        $tickets = mongoFind($mongoManager, ['username' => $selectedUser, 'status' => true]);
 
         echo "<h3>Results:</h3>";
         
         $count = 0;
-        foreach ($cursor as $ticket) {
+        foreach ($tickets as $ticket) {
             $count++;
             echo "<div class='ticket active'>";
             echo "<b>Status:</b> Active<br>";

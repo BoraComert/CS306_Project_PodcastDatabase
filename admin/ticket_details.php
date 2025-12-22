@@ -6,12 +6,12 @@ $ticketId = $_GET['id'];
 
 try {
     $objectId = new MongoDB\BSON\ObjectId($ticketId);
-    $ticket = $ticketCollection->findOne(['_id' => $objectId]);
+    $ticket = mongoFindOne($mongoManager, ['_id' => $objectId]);
 } catch (Exception $e) { die("Invalid ID."); }
 
 // --- OPERATION 1: CLOSE TICKET (RESOLVE) ---
 if (isset($_POST['resolve_ticket'])) {
-    $ticketCollection->updateOne(
+    mongoUpdateOne($mongoManager,
         ['_id' => $objectId],
         ['$set' => ['status' => false]] // Set status to false (Close)
     );
@@ -29,7 +29,7 @@ if (isset($_POST['submit_comment'])) {
             'comment' => $comment,
             'created_at' => date("Y-m-d H:i:s")
         ];
-        $ticketCollection->updateOne(
+        mongoUpdateOne($mongoManager,
             ['_id' => $objectId],
             ['$push' => ['comments' => $newComment]]
         );

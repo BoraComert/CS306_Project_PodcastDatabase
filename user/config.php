@@ -1,14 +1,14 @@
 <?php
-// Load Composer library
-require_once __DIR__ . '/vendor/autoload.php';
-
 // --- MONGODB SETTINGS ---
+// Using MongoDB\Driver\Manager as required by PDF
 try {
-    $mongoClient = new MongoDB\Client("mongodb://localhost:27017");
-    $ticketCollection = $mongoClient->support_db->tickets;
+    $mongoManager = new MongoDB\Driver\Manager("mongodb://localhost:27017");
 } catch (Exception $e) {
     die("MongoDB Error: " . $e->getMessage());
 }
+
+// Load MongoDB helper functions
+require_once __DIR__ . '/mongo_helper.php';
 
 // --- MYSQL SETTINGS ---
 $host = "localhost";

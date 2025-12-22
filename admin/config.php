@@ -1,14 +1,14 @@
 <?php
-// NOTE: Loading library from user folder (../user/)
-require_once __DIR__ . '/../user/vendor/autoload.php';
-
-// MongoDB Connection
+// --- MONGODB SETTINGS ---
+// Using MongoDB\Driver\Manager as required by PDF
 try {
-    $mongoClient = new MongoDB\Client("mongodb://localhost:27017");
-    $ticketCollection = $mongoClient->support_db->tickets;
+    $mongoManager = new MongoDB\Driver\Manager("mongodb://localhost:27017");
 } catch (Exception $e) {
     die("MongoDB Connection Error: " . $e->getMessage());
 }
+
+// Load MongoDB helper functions
+require_once __DIR__ . '/../user/mongo_helper.php';
 
 // MySQL Connection (Keep for future use)
 $host = "localhost"; $user = "root"; $pass = ""; $dbname = "supodcast_db";

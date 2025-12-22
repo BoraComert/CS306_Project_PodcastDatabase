@@ -19,7 +19,7 @@ include "config.php"; // Load connection
   <p style="color: green;">
       <?php 
       if(isset($conn)) echo "MySQL Connected "; 
-      if(isset($mongoClient)) echo "| MongoDB Connected"; 
+      if(isset($mongoManager)) echo "| MongoDB Connected"; 
       ?>
   </p>
 </header>

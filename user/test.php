@@ -32,8 +32,10 @@ require 'config.php';
     <?php 
     $mongoDurum = false;
     try {
-        if(isset($mongoClient)) {
-            $mongoClient->listDatabases();
+        if(isset($mongoManager)) {
+            // Test connection by executing a simple command
+            $command = new MongoDB\Driver\Command(['ping' => 1]);
+            $mongoManager->executeCommand('admin', $command);
             $mongoDurum = true;
         }
     } catch (Exception $e) {

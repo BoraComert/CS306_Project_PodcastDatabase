@@ -23,10 +23,10 @@ include 'config.php';
 <?php
 // Get only ACTIVE (status: true) tickets.
 // On user side we filtered by user, here we select ALL.
-$cursor = $ticketCollection->find(['status' => true]);
+$tickets = mongoFind($mongoManager, ['status' => true]);
 
 $count = 0;
-foreach ($cursor as $ticket) {
+foreach ($tickets as $ticket) {
     $count++;
     echo "<div class='ticket-card'>";
     echo "<h3>From: " . htmlspecialchars($ticket['username']) . "</h3>";

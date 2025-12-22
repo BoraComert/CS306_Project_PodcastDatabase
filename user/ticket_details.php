@@ -11,7 +11,7 @@ $ticketId = $_GET['id'];
 // MongoDB requires special format for ID search
 try {
     $objectId = new MongoDB\BSON\ObjectId($ticketId);
-    $ticket = $ticketCollection->findOne(['_id' => $objectId]);
+    $ticket = mongoFindOne($mongoManager, ['_id' => $objectId]);
 } catch (Exception $e) {
     die("Invalid Ticket ID.");
 }
@@ -35,12 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ];
 
         // Add new element to 'comments' array in MongoDB (PUSH operation)
-        $updateResult = $ticketCollection->updateOne(
+        $modifiedCount = mongoUpdateOne($mongoManager, 
             ['_id' => $objectId],
             ['$push' => ['comments' => $commentData]]
         );
 
-        if ($updateResult->getModifiedCount() == 1) {
+        if ($modifiedCount == 1) {
             $mesaj = "<p style='color:green'>Comment added!</p>";
             // Refresh page to show comment
             header("Refresh:0");

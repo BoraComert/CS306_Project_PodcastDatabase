@@ -32,10 +32,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             'comments' => []  // Comments array
         ];
 
-        // Save to MongoDB
-        $insertResult = $ticketCollection->insertOne($ticketData);
+        // Save to MongoDB using Manager
+        $insertedCount = mongoInsertOne($mongoManager, $ticketData);
 
-        if ($insertResult->getInsertedCount() == 1) {
+        if ($insertedCount == 1) {
             $mesaj = "<div style='color: green; border: 1px solid green; padding: 10px; margin-bottom: 10px;'>
                         Ticket created successfully! <a href='tickets.php'>View List</a>
                       </div>";
@@ -76,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php 
             if (!empty($users) && count($users) > 0) {
                 foreach ($users as $user) {
-                    echo '<option value="' . htmlspecialchars($user, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars($user, ENT_QUOTES, 'UTF-8') . '</option>';
+                    echo '<option value="' . htmlspecialchars($user) . '">' . htmlspecialchars($user) . '</option>';
                 }
             } else {
                 echo '<option value="">(No users found - Check database)</option>';
