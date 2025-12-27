@@ -56,8 +56,11 @@ $users = mongoDistinct($mongoManager, 'username');
             echo "<b>Status:</b> Active<br>";
             echo "<b>Subject:</b> " . htmlspecialchars($ticket['message']) . "<br>";
             echo "<small>Created: " . $ticket['created_at'] . "</small><br><br>";
-            // Detail link
-            echo "<a href='ticket_details.php?id=" . $ticket['_id'] . "'>View Details</a>";
+            // Detail link - ensure _id is a string
+            $ticketId = is_array($ticket['_id']) && isset($ticket['_id']['$oid']) 
+                ? $ticket['_id']['$oid'] 
+                : (string)$ticket['_id'];
+            echo "<a href='ticket_details.php?id=" . htmlspecialchars($ticketId) . "'>View Details</a>";
             echo "</div>";
         }
 

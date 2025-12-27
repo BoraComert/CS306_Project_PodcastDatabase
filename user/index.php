@@ -27,6 +27,13 @@ include "config.php"; // Load connection
 <hr>
 
 <h3>Menu</h3>
+
+<h2>Search Podcast</h2>
+<form action="Search.php" method="GET">
+    <input type="text" name="keyword" placeholder="Podcast name..." required>
+    <button type="submit">Search</button>
+</form>
+
 <ul>
     
     <br>
@@ -43,21 +50,14 @@ include "config.php"; // Load connection
     <li><a href="trigger_rating.php">Test 1: Automatic Rating Update (Bekir Can Aracı)</a></li>
     <li><a href="trigger_delete.php">Test 2: Automatic Deletion (Bora Cömert)</a></li>
     <br>
-    <li><a href="tickets.php">Support Ticket System (MongoDB)</a></li>
 </ul>
 
 <hr>
 
-<h2>Search Podcast</h2>
-<form action="Search.php" method="GET">
-    <input type="text" name="keyword" placeholder="Podcast name..." required>
-    <button type="submit">Search</button>
-</form>
 
-<footer>
-  <br><br>
-  <p>© 2025 Database Project - Phase 3</p>
-</footer>
+<ul>
+    <li><a href="tickets.php">Support Ticket System (MongoDB)</a></li>
+</ul>
+
 
 </body>
-</html>
